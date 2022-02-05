@@ -163,16 +163,16 @@ mutable struct App <: System
       fire_usec = get_env_bl("CLOCK_FIRE_USEC", false)
       fire_nsec = get_env_bl("CLOCK_FIRE_NSEC", false)
       if fire_sec
-        push!(Clock.message_fires, (1e9, RT_SEC, "second"))
+        push!(Clock.periodic_jobs, (1e9, RT_SEC, "second"))
       end
       if fire_msec
-        push!(Clock.message_fires, (1e6, RT_MSEC, "millisecond"))
+        push!(Clock.periodic_jobs, (1e6, RT_MSEC, "millisecond"))
       end
       if fire_usec
-        push!(Clock.message_fires, (1e3, RT_USEC, "microsecond"))
+        push!(Clock.periodic_jobs, (1e3, RT_USEC, "microsecond"))
       end
       if fire_nsec
-        push!(Clock.message_fires, (1.0, RT_NSEC, "nanosecond"))
+        push!(Clock.periodic_jobs, (1.0, RT_NSEC, "nanosecond"))
       end
       
       # sdl

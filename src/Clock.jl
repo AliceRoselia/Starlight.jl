@@ -5,11 +5,7 @@ export clk
 mutable struct Clock <: System
   started::Base.Event
   stopped::Bool
-  #fire_sec::Bool
-  #fire_msec::Bool
-  #fire_usec::Bool
-  #fire_nsec::Bool
-  message_fires::Vector{Tuple{float,Function,String}}
+  periodic_jobs::Vector{Tuple{float,Function,String}}
   freq::AbstractFloat
 end
 
@@ -29,23 +25,7 @@ RT_MSEC = RT_SCALE{1e-3, SIG_TIME_COUNT}
 RT_USEC = RT_SCALE{1e-6, SIG_TIME_COUNT}
 RT_NSEC = RT_SCALE{1e-9, SIG_TIME_COUNT}
 TICK = RT_SCALE{1.0, SIG_TIME_TICK}
-#=
-struct RT_SEC
-  Δ::AbstractFloat
-end
-struct RT_MSEC
-  Δ::AbstractFloat
-end
-struct RT_USEC
-  Δ::AbstractFloat
-end
-struct RT_NSEC
-  Δ::AbstractFloat
-end
-struct TICK
-  Δ::AbstractFloat # seconds, but has a distinct meaning from from RT_SEC
-end
-=#
+
 struct SLEEP_TIME
   Δ::UInt # time in nanoseconds to sleep for
 end
@@ -82,7 +62,7 @@ function job!(c::Clock, f, arg=1)
 end
 
 function awake!(c::Clock)
-  for i in c.message_fires
+  for i in c.periodic_jobs
     job!(c, Δ-> sleep_with_message(Δ,i[1], i[2], i[3]))
   end
 
